@@ -1,2 +1,1 @@
-Welcome
-For my portfolio: https://awesome-ramanujan-416e4a.netlify.app/
+Welcome, my portfolio: https://myfolio-isaj011-nyatirogue.netlify.app/
