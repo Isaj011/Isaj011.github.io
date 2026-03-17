@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Ismael Saad — Lead Full-Stack Engineer. Nairobi, KE."/>
+<title>ISAJ011 · Arkham Systems · Ismael Saad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04060d;--s1:#080c16;--s2:#0c1020;--s3:#101628;
+  --acc:#3a7bd5;--acc2:#5a9ff5;--acc3:#7bbfff;
+  --gold:#c8a84b;--gold2:#d4aa50;
+  --red:#c0392b;--green:#2ecc71;
+  --border:#162040;--border2:#1e2e50;
+  --text:#a8c8f0;--text2:#d0e8ff;
+  --dim:#1a2840;--muted:#3a5880;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;cursor:default}
+
+/* RAIN */
+#rain{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.14}
+
+/* SCANLINES */
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(58,123,213,.007) 2px,rgba(58,123,213,.007) 4px);pointer-events:none;z-index:999}
+
+/* WRAP */
+.wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;border-left:1px solid var(--border);border-right:1px solid var(--border);min-height:100vh}
+
+/* TOP HUD */
+.topbar{background:var(--s1);border-bottom:1px solid var(--border2);padding:8px 22px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:200}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--acc),transparent)}
+.tb-brand{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--acc2);letter-spacing:5px}
+.tb-center{font-family:'Orbitron',monospace;font-size:8px;color:var(--muted);letter-spacing:3px;display:flex;align-items:center;gap:8px}
+.tb-right{display:flex;align-items:center;gap:16px}
+.tb-item{font-size:8px;color:var(--muted);letter-spacing:1px;text-align:right}
+.tb-item b{display:block;font-family:'Orbitron',monospace;font-size:9px;color:var(--acc2)}
+.livedot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:lp 1.6s infinite;vertical-align:middle;margin-right:4px}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.15}}
+
+/* HERO */
+.hero{background:var(--s1);padding:30px 26px 24px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+#gridbg{position:absolute;inset:0;width:100%;height:100%;opacity:.06;pointer-events:none}
+.hero-inner{position:relative;z-index:1;display:flex;gap:22px;align-items:flex-start}
+.emblem{width:86px;height:86px;background:var(--s2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.emblem::before,.emblem::after{content:'';position:absolute;background:var(--acc)}
+.emblem::before{top:0;left:0;right:0;height:2px;animation:etop 4s linear infinite}
+.emblem::after{bottom:0;left:0;right:0;height:2px;animation:ebot 4s linear infinite}
+@keyframes etop{0%,100%{transform:scaleX(0);transform-origin:left}50%{transform:scaleX(1)}}
+@keyframes ebot{0%,100%{transform:scaleX(0);transform-origin:right}50%{transform:scaleX(1)}}
+.hero-name{font-family:'Orbitron',monospace;font-weight:700;font-size:34px;color:var(--text2);letter-spacing:6px;line-height:1}
+.hero-name .a{color:var(--acc2)}
+.hero-role{font-family:'Orbitron',monospace;font-size:10px;color:var(--acc);letter-spacing:4px;margin:7px 0 12px}
+.hero-bio{font-size:11px;color:var(--text);line-height:2;border-left:2px solid var(--acc);padding-left:12px;max-width:520px}
+.hero-bio .g{color:var(--gold2)}
+.sbadges{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.sb{font-family:'Orbitron',monospace;font-size:8px;padding:5px 12px;border:1px solid;letter-spacing:2px;cursor:pointer;transition:all .2s}
+.sb.grn{border-color:#1a5a30;color:var(--green);background:#0a1810}
+.sb.blu{border-color:var(--border2);color:var(--acc2);background:var(--s2)}
+.sb.blu:hover{border-color:var(--acc);background:var(--dim)}
+.sb.gld{border-color:#4a3a10;color:var(--gold2);background:#120e04}
+
+/* SECTION */
+.sec{padding:20px 26px;border-bottom:1px solid var(--border)}
+.sec-hdr{font-family:'Orbitron',monospace;font-size:9px;color:var(--acc);letter-spacing:5px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sec-hdr::before{content:'//';color:var(--muted)}
+.sec-hdr::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* METERS */
+.meters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media(max-width:600px){.meters{grid-template-columns:repeat(2,1fr)}}
+.meter{background:var(--s2);border:1px solid var(--border2);border-top:2px solid var(--acc);padding:14px 10px;text-align:center;cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
+.meter:hover{border-top-color:var(--acc2);background:var(--s3);transform:translateY(-2px)}
+.msweep{position:absolute;top:0;left:-100%;width:50%;height:1px;background:linear-gradient(90deg,transparent,var(--acc2));animation:msw 2.6s linear infinite}
+@keyframes msw{to{left:150%}}
+.mnum{font-family:'Orbitron',monospace;font-size:26px;font-weight:700;color:var(--acc2)}
+.mlbl{font-size:8px;color:var(--muted);letter-spacing:2px;margin-top:3px}
+.msub{font-size:8px;color:var(--green);margin-top:3px}
+.msegs{display:flex;gap:2px;margin-top:9px}
+.mseg{flex:1;height:3px;background:var(--dim);border-radius:1px;transition:background .4s}
+.mseg.on{background:var(--acc)}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-family:'Orbitron',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--border2);color:var(--muted);letter-spacing:2px;cursor:pointer;transition:all .2s}
+.chip:hover,.chip.on{border-color:var(--acc2);color:var(--acc2);background:#0a1828}
+
+/* SKILLS */
+.skill{display:grid;grid-template-columns:170px 1fr 42px;align-items:center;gap:10px;margin:9px 0;cursor:pointer}
+.skill:hover .sn{color:var(--acc2)}
+.sn{font-size:11px;color:var(--text);transition:color .2s;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:1px}
+.st{height:5px;background:var(--dim);overflow:hidden;border-radius:1px}
+.sf{height:100%;width:0;transition:width 1.8s cubic-bezier(.4,0,.2,1);background:linear-gradient(90deg,#1a3a6a,var(--acc))}
+.sf.flash{background:linear-gradient(90deg,#1a4a8a,var(--acc2))}
+.sp{font-family:'Orbitron',monospace;font-size:9px;color:var(--muted);text-align:right}
+
+/* CASE FILES */
+.case{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--acc);padding:14px 16px;margin:9px 0;cursor:pointer;transition:all .22s}
+.case:hover{border-left-color:var(--acc2);background:var(--s3)}
+.case-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.cmeta{font-family:'Orbitron',monospace;font-size:8px;color:var(--muted);letter-spacing:2px}
+.cname{font-family:'Orbitron',monospace;font-size:13px;color:var(--text2);letter-spacing:2px;margin:4px 0 3px}
+.cstack{font-size:10px;color:var(--muted)}
+.cright{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.ctag{font-family:'Orbitron',monospace;font-size:7px;padding:3px 8px;letter-spacing:2px;border:1px solid}
+.ctag.live{color:var(--green);border-color:#1a5a30;background:#0a1810}
+.ctag.wip{color:var(--gold2);border-color:#4a3a10;background:#120e04;animation:wip 2s infinite}
+@keyframes wip{0%,100%{opacity:1}50%{opacity:.5}}
+.chev{font-size:16px;color:var(--dim);transition:transform .3s}
+.case.open .chev{transform:rotate(180deg)}
+.cbody{max-height:0;overflow:hidden;opacity:0;transition:max-height .4s ease,opacity .3s}
+.case.open .cbody{max-height:180px;opacity:1}
+.cbody-in{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--text);line-height:1.85}
+.clinks{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.clink{font-family:'Orbitron',monospace;font-size:8px;padding:4px 10px;border:1px solid var(--border2);color:var(--acc2);cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
+.clink:hover{border-color:var(--acc2);background:var(--dim)}
+
+/* MISSION */
+.mission{background:#020408;border:1px solid var(--border);border-left:3px solid var(--acc);padding:14px 18px;font-size:11px;line-height:2}
+.mission .k{color:var(--acc2);font-family:'Orbitron',monospace;font-size:9px}
+.mission .v{color:var(--text)}
+.mission .hi{color:var(--text2)}
+
+/* BATCOMPUTER */
+.pc{background:#020408;border:1px solid var(--border2)}
+.pc-tb{background:#06070e;border-bottom:1px solid var(--border);padding:8px 14px;display:flex;align-items:center;gap:7px}
+.pcd{width:10px;height:10px;border-radius:50%}
+.pc-ttl{font-family:'Orbitron',monospace;font-size:8px;color:var(--muted);margin-left:8px;letter-spacing:3px}
+.pc-clk{margin-left:auto;font-family:'Orbitron',monospace;font-size:9px;color:var(--acc);letter-spacing:2px}
+.pc-tabs{background:#050810;border-bottom:1px solid var(--border);padding:5px 14px;display:flex;gap:8px;flex-wrap:wrap}
+.pctab{font-family:'Orbitron',monospace;font-size:8px;padding:4px 10px;border:1px solid;cursor:pointer;letter-spacing:1px;transition:all .2s}
+.pctab.on{border-color:var(--acc);color:var(--acc2);background:#0a1828}
+.pctab.off{border-color:var(--border);color:var(--muted)}
+.pctab.off:hover{border-color:var(--border2);color:var(--text)}
+.pc-body{display:flex;height:320px}
+.pc-side{width:150px;background:#040710;border-right:1px solid var(--border);padding:10px 0;flex-shrink:0;overflow-y:auto}
+.pcnav{font-family:'Orbitron',monospace;font-size:8px;padding:8px 12px;cursor:pointer;letter-spacing:2px;color:var(--muted);transition:all .2s;border-left:2px solid transparent;display:flex;align-items:center;gap:6px}
+.pcnav.active,.pcnav:hover{color:var(--acc2);background:#080c18;border-left-color:var(--acc)}
+.pcnav-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.pc-qs{padding:10px;border-top:1px solid var(--border);margin-top:8px}
+.pc-qslbl{font-size:7px;color:var(--muted);letter-spacing:2px;margin-bottom:6px;font-family:'Orbitron',monospace}
+.pc-main{flex:1;overflow:hidden}
+.pc-panel{display:none;height:100%;overflow-y:auto;padding:12px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.pc-panel.active{display:block}
+
+/* TERMINAL */
+.tl{font-size:11px;line-height:1.9;padding:1px 0;font-family:'Share Tech Mono',monospace}
+.tl.pr{color:var(--acc)}
+.tl.ok{color:var(--green)}
+.tl.go{color:var(--gold2)}
+.tl.di{color:var(--muted)}
+.tl.ou{color:var(--text)}
+.tl.er{color:var(--red)}
+.t-inp{display:flex;align-items:center;gap:6px;border-top:1px solid var(--border);padding-top:9px;margin-top:8px}
+.t-pr-lbl{color:var(--acc);font-size:11px;white-space:nowrap;font-family:'Share Tech Mono',monospace}
+.t-in{background:transparent;border:none;outline:none;color:var(--text2);font-family:'Share Tech Mono',monospace;font-size:11px;flex:1;caret-color:var(--acc2)}
+
+/* HEATMAP */
+.hg{display:grid;grid-template-columns:repeat(52,1fr);gap:2px}
+.hc{aspect-ratio:1;border-radius:1px;cursor:pointer;transition:transform .12s}
+.hc:hover{transform:scale(1.9);z-index:5;position:relative}
+.htip{font-size:9px;color:var(--acc2);margin-top:8px;font-family:'Orbitron',monospace;letter-spacing:1px;min-height:14px}
+
+/* SYSINFO */
+.srow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:10px}
+.srl{color:var(--muted);letter-spacing:1px}
+.srv{color:var(--text2);font-family:'Orbitron',monospace;font-size:9px}
+.prow{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:10px}
+.pname{color:var(--text);width:120px}
+.pbar{flex:1;height:3px;background:var(--dim)}
+.pfill{height:100%;background:var(--acc);border-radius:1px;animation:pfload 1.5s ease forwards;width:0}
+@keyframes pfload{to{width:var(--w)}}
+.ppct{color:var(--muted);width:30px;text-align:right;font-family:'Orbitron',monospace;font-size:8px}
+
+/* FILES */
+.frow{display:flex;align-items:center;gap:8px;padding:6px 8px;cursor:pointer;font-size:10px;transition:background .15s;border-radius:2px}
+.frow:hover{background:var(--dim)}
+.fic{width:14px;height:14px;border:1px solid;display:flex;align-items:center;justify-content:center;font-size:7px;flex-shrink:0;font-family:'Orbitron',monospace}
+.fi-d{border-color:var(--gold);color:var(--gold2)}
+.fi-j{border-color:var(--acc);color:var(--acc2)}
+.fi-m{border-color:var(--green);color:var(--green)}
+.fname{color:var(--text);flex:1}
+.fsz{color:var(--muted);font-size:8px;font-family:'Orbitron',monospace}
+
+/* CONTRIBUTION GRID */
+.full-hg{display:grid;grid-template-columns:repeat(52,1fr);gap:2px}
+.full-hc{aspect-ratio:1;border-radius:1px;cursor:pointer;transition:transform .12s}
+.full-hc:hover{transform:scale(1.6)}
+.hleg{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:9px;color:var(--muted);letter-spacing:1px}
+.hlegc{width:9px;height:9px;border-radius:1px}
+
+/* GAME */
+.game-top{background:#030508;border-bottom:1px solid var(--border);padding:10px 22px;display:flex;justify-content:space-between;align-items:center}
+.glgame{font-family:'Orbitron',monospace;font-size:9px;color:var(--acc);letter-spacing:4px}
+.ghud{display:flex;gap:18px}
+.ghi{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px}
+.ghi .lbl{color:var(--muted)}
+.ghi .val{color:var(--text2)}
+.gcvwrap{background:#02030a;padding:8px;display:flex;justify-content:center;border-bottom:1px solid var(--border)}
+canvas#gcv{display:block;image-rendering:pixelated;border:1px solid var(--border);max-width:100%}
+.gctrl{background:#040608;padding:9px 22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.ghint{font-size:9px;color:var(--muted);letter-spacing:1px}
+.glives{display:flex;gap:5px}
+.gli{width:12px;height:12px;background:var(--red);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.gli.dead{background:var(--dim)}
+.gpu{background:#040608;font-family:'Orbitron',monospace;font-size:9px;color:var(--gold2);letter-spacing:3px;min-height:14px;padding:5px 22px;text-align:center;border-bottom:1px solid var(--border)}
+
+/* OPEN CHANNEL */
+.links{display:flex;gap:10px;flex-wrap:wrap}
+.lnk{font-family:'Orbitron',monospace;font-size:8px;padding:8px 16px;border:1px solid var(--border2);color:var(--muted);letter-spacing:2px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.lnk:hover{border-color:var(--acc);color:var(--acc2);background:var(--dim)}
+.lnk-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* FOOTER */
+.footer{background:var(--s1);border-top:1px solid var(--border);padding:14px 26px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.fl{font-family:'Orbitron',monospace;font-size:8px;color:var(--muted);letter-spacing:3px}
+.fr{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+
+<canvas id="rain"></canvas>
+
+<div class="wrap">
+
+<!-- TOP HUD BAR -->
+<div class="topbar">
+  <div class="tb-brand">BATCOMPUTER</div>
+  <div class="tb-center"><span class="livedot"></span>ARKHAM SYSTEMS v4.7</div>
+  <div class="tb-right">
+    <div class="tb-item"><span>UPTIME</span><b id="upt">00:00:00</b></div>
+    <div class="tb-item"><span>THREAT</span><b style="color:#c0392b">NOMINAL</b></div>
+    <div class="tb-item"><span>NODE</span><b style="color:#2ecc71">ONLINE</b></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <canvas id="gridbg"></canvas>
+  <div class="hero-inner">
+    <div class="emblem">
+      <svg width="60" height="36" viewBox="0 0 60 36" fill="none">
+        <path d="M30 5C22 5 13 10 8 19C13 17 17 17 19 19C17 22 15 27 17 31C21 26 25 24 30 24C35 24 39 26 43 31C45 27 43 22 41 19C43 17 47 17 52 19C47 10 38 5 30 5Z" fill="#3a7bd5" opacity=".9"/>
+        <path d="M30 8C23 8 15 12 10 19C14 18 18 18.5 20 20.5C18.5 23 17 27 19 30C22.5 25.5 26.5 23.5 30 23.5C33.5 23.5 37.5 25.5 41 30C43 27 41.5 23 40 20.5C42 18.5 46 18 50 19C45 12 37 8 30 8Z" fill="#5a9ff5" opacity=".5"/>
+      </svg>
+    </div>
+    <div class="hero-text">
+      <div class="hero-name">ISAJ<span class="a">011</span></div>
+      <div class="hero-role">LEAD FRONTEND &amp; FULL-STACK ENGINEER · SERIANU LIMITED</div>
+      <div class="hero-bio">
+        <span class="g">MISSION:</span> Microfrontend architecture. Enterprise systems. Fintech at scale.<br>
+        <span class="g">METHOD:</span> Clean code. Ship fast. Zero bugs. Leave docs.<br>
+        <span class="g">BASE:</span> Nairobi, KE &rarr; Remote &nbsp;·&nbsp; Open to high-value contracts.
+      </div>
+      <div class="sbadges">
+        <span class="sb grn"><span class="livedot" style="width:5px;height:5px"></span>ONLINE</span>
+        <span class="sb blu" id="loctgl" onclick="this.textContent=this.textContent.includes('NAIROBI')?'UTC+3 · REMOTE':'NAIROBI, KE'">NAIROBI, KE</span>
+        <span class="sb gld">OPEN TO CONTRACTS</span>
+        <span class="sb blu">SERIANU LIMITED</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IDENTITY -->
+<div class="sec">
+  <div class="sec-hdr">IDENTITY FILE</div>
+  <div class="mission" style="border-left-width:2px">
+    <span class="k">CODENAME &nbsp;: </span><span class="hi">ISAJ011</span><br>
+    <span class="k">NAME &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </span><span class="v">Ismael Saad</span><br>
+    <span class="k">ROLE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </span><span class="v">Lead Frontend &amp; Full-Stack Engineer</span><br>
+    <span class="k">COMPANY &nbsp;&nbsp;: </span><span class="v">Serianu Limited — Nairobi, Kenya &nbsp;·&nbsp; May 2023 – Present</span><br>
+    <span class="k">EDU &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </span><span class="v">BBIT — Murang'a University of Technology, Kenya (2016–2020)</span><br>
+    <span class="k">MISSION &nbsp;&nbsp;: </span><span class="v" style="color:var(--gold2)">Build systems that work in the dark. Clean code. Ship fast.</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="sec">
+  <div class="sec-hdr">FIELD STATISTICS</div>
+  <div class="meters">
+    <div class="meter"><div class="msweep"></div><div class="mnum" id="m1">0</div><div class="mlbl">COMMITS</div><div class="msub">+47 this month</div><div class="msegs" id="ms1"></div></div>
+    <div class="meter"><div class="msweep" style="animation-delay:.7s"></div><div class="mnum" id="m2">0</div><div class="mlbl">REPOS</div><div class="msub">public projects</div><div class="msegs" id="ms2"></div></div>
+    <div class="meter"><div class="msweep" style="animation-delay:1.4s"></div><div class="mnum" id="m3">0</div><div class="mlbl">STARS</div><div class="msub">total earned</div><div class="msegs" id="ms3"></div></div>
+    <div class="meter"><div class="msweep" style="animation-delay:2.1s"></div><div class="mnum" id="m4">0</div><div class="mlbl">DAY STREAK</div><div class="msub">personal best</div><div class="msegs" id="ms4"></div></div>
+  </div>
+</div>
+
+<!-- TECH STACK -->
+<div class="sec">
+  <div class="sec-hdr">UTILITY BELT</div>
+  <div class="chips">
+    <span class="chip on" onclick="this.classList.toggle('on')">React.js</span>
+    <span class="chip on" onclick="this.classList.toggle('on')">Next.js</span>
+    <span class="chip on" onclick="this.classList.toggle('on')">TypeScript</span>
+    <span class="chip" onclick="this.classList.toggle('on')">JavaScript ES6+</span>
+    <span class="chip" onclick="this.classList.toggle('on')">Vite</span>
+    <span class="chip" onclick="this.classList.toggle('on')">Redux Toolkit</span>
+    <span class="chip" onclick="this.classList.toggle('on')">Tailwind CSS</span>
+    <span class="chip on" onclick="this.classList.toggle('on')">Spring Boot</span>
+    <span class="chip on" onclick="this.classList.toggle('on')">Django</span>
+    <span class="chip" onclick="this.classList.toggle('on')">Node.js</span>
+    <span class="chip" onclick="this.classList.toggle('on')">Express.js</span>
+    <span class="chip" onclick="this.classList.toggle('on')">GraphQL</span>
+    <span class="chip on" onclick="this.classList.toggle('on')">PostgreSQL</span>
+    <span class="chip" onclick="this.classList.toggle('on')">MongoDB</span>
+    <span class="chip" onclick="this.classList.toggle('on')">MySQL</span>
+    <span class="chip" onclick="this.classList.toggle('on')">Redis</span>
+    <span class="chip" onclick="this.classList.toggle('on')">Docker</span>
+    <span class="chip" onclick="this.classList.toggle('on')">Kubernetes</span>
+    <span class="chip" onclick="this.classList.toggle('on')">AWS</span>
+    <span class="chip" onclick="this.classList.toggle('on')">GitHub Actions</span>
+    <span class="chip" onclick="this.classList.toggle('on')">Figma</span>
+    <span class="chip" onclick="this.classList.toggle('on')">ReportLab</span>
+  </div>
+  <div style="font-size:9px;color:var(--muted);margin-top:8px;letter-spacing:1px">tap any gadget to highlight it</div>
+</div>
+
+<!-- SKILLS -->
+<div class="sec">
+  <div class="sec-hdr">OPERATIVE ASSESSMENT</div>
+  <div class="skill" onclick="ps(this)"><span class="sn">Frontend Systems</span><div class="st"><div class="sf" data-w="93"></div></div><span class="sp">93%</span></div>
+  <div class="skill" onclick="ps(this)"><span class="sn">Microfrontend Arch</span><div class="st"><div class="sf" data-w="88"></div></div><span class="sp">88%</span></div>
+  <div class="skill" onclick="ps(this)"><span class="sn">Spring Boot / Java</span><div class="st"><div class="sf" data-w="88"></div></div><span class="sp">88%</span></div>
+  <div class="skill" onclick="ps(this)"><span class="sn">Django / Python</span><div class="st"><div class="sf" data-w="87"></div></div><span class="sp">87%</span></div>
+  <div class="skill" onclick="ps(this)"><span class="sn">API Architecture</span><div class="st"><div class="sf" data-w="88"></div></div><span class="sp">88%</span></div>
+  <div class="skill" onclick="ps(this)"><span class="sn">Database Intel</span><div class="st"><div class="sf" data-w="82"></div></div><span class="sp">82%</span></div>
+  <div class="skill" onclick="ps(this)"><span class="sn">DevOps &amp; Cloud</span><div class="st"><div class="sf" data-w="72"></div></div><span class="sp">72%</span></div>
+  <div class="skill" onclick="ps(this)"><span class="sn">Technical Lead</span><div class="st"><div class="sf" data-w="90"></div></div><span class="sp">90%</span></div>
+</div>
+
+<!-- CASE FILES -->
+<div class="sec">
+  <div class="sec-hdr">CASE FILES</div>
+  <div class="case" onclick="tc(this)">
+    <div class="case-head">
+      <div><div class="cmeta">CASE #001 · FULL-STACK · NODE.JS</div><div class="cname">VEHICLE &amp; ROUTE MANAGEMENT</div><div class="cstack">Node.js · Express · MongoDB · React · JWT · RBAC</div></div>
+      <div class="cright"><span class="ctag live">LIVE</span><span class="chev">&#8964;</span></div>
+    </div>
+    <div class="cbody"><div class="cbody-in">Full-stack logistics platform for Kenya's transport ecosystem. JWT authentication, RBAC, modular microservices-ready architecture. Built for containerised deployment with Docker and Kubernetes.<div class="clinks"><a class="clink" href="https://github.com/Isaj011" target="_blank">REPO &#8599;</a></div></div></div>
+  </div>
+  <div class="case" onclick="tc(this)">
+    <div class="case-head">
+      <div><div class="cmeta">CASE #002 · ENTERPRISE · DJANGO</div><div class="cname">DJANGO REPORTING ENGINE</div><div class="cstack">Django · Python · ReportLab · PostgreSQL</div></div>
+      <div class="cright"><span class="ctag live">LIVE</span><span class="chev">&#8964;</span></div>
+    </div>
+    <div class="cbody"><div class="cbody-in">Enterprise dynamic reporting system generating structured PDFs and Docx from configurable JSON-driven templates. Field-mapping, runtime data injection, scalable schema support. Currently deployed at Serianu Limited.<div class="clinks"><a class="clink" href="https://github.com/Isaj011" target="_blank">REPO &#8599;</a></div></div></div>
+  </div>
+  <div class="case" onclick="tc(this)">
+    <div class="case-head">
+      <div><div class="cmeta">CASE #003 · 3D · PORTFOLIO</div><div class="cname">3D DEVELOPER PORTFOLIO</div><div class="cstack">React · Three.js · Vite</div></div>
+      <div class="cright"><span class="ctag live">LIVE</span><span class="chev">&#8964;</span></div>
+    </div>
+    <div class="cbody"><div class="cbody-in">Interactive 3D portfolio with Three.js optimised rendering and smooth UX. Built with React and Vite, deployed on Netlify.<div class="clinks"><a class="clink" href="https://3d-app-portfolio-saad.netlify.app" target="_blank">3D LIVE &#8599;</a><a class="clink" href="https://myfolio-isaj011-nyatirogue.netlify.app" target="_blank">CLASSIC &#8599;</a></div></div></div>
+  </div>
+</div>
+
+<!-- CURRENT MISSION -->
+<div class="sec">
+  <div class="sec-hdr">CURRENT MISSION — SERIANU LIMITED</div>
+  <div class="mission">
+    <span class="k">ORG &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </span><span class="hi">Serianu Limited · Nairobi, Kenya</span><br>
+    <span class="k">ROLE &nbsp;&nbsp;&nbsp;&nbsp;: </span><span class="hi">Lead Frontend &amp; Full-Stack Engineer</span><br>
+    <span class="k">TENURE &nbsp;&nbsp;: </span><span class="v">May 2023 – Present</span><br>
+    <span class="k">KEY OPS :</span><br>
+    <span class="v">&nbsp;&nbsp;&#9658; Led migration to Microfrontend architecture — modular deploys, independent scaling</span><br>
+    <span class="v">&nbsp;&nbsp;&#9658; Built Spring Boot (Java) + Django (Python) backend services for enterprise platforms</span><br>
+    <span class="v">&nbsp;&nbsp;&#9658; Architected Django Reporting Engine — dynamic PDF generation, JSON-driven templates</span><br>
+    <span class="v">&nbsp;&nbsp;&#9658; Designed PostgreSQL &amp; MongoDB schemas optimised for query performance at scale</span><br>
+    <span class="v">&nbsp;&nbsp;&#9658; Implemented JWT + RBAC across distributed systems</span><br>
+    <span class="v">&nbsp;&nbsp;&#9658; Mentored junior/mid engineers · led architecture reviews · Agile/Scrum delivery</span>
+  </div>
+</div>
+
+<!-- BATCOMPUTER PC -->
+<div class="sec">
+  <div class="sec-hdr">BATCOMPUTER INTERFACE</div>
+  <div class="pc">
+    <div class="pc-tb">
+      <div class="pcd" style="background:#c0392b"></div>
+      <div class="pcd" style="background:#c8a84b"></div>
+      <div class="pcd" style="background:#2ecc71"></div>
+      <span class="pc-ttl">ARKHAM SYSTEMS · ISAJ011@GOTHAM</span>
+      <span class="pc-clk" id="pclk">00:00:00</span>
+    </div>
+    <div class="pc-tabs">
+      <span class="pctab on" onclick="swTab('terminal',this)">TERMINAL</span>
+      <span class="pctab off" onclick="swTab('heatmap',this)">HEATMAP</span>
+      <span class="pctab off" onclick="swTab('sysinfo',this)">SYSINFO</span>
+      <span class="pctab off" onclick="swTab('files',this)">FILES</span>
+    </div>
+    <div class="pc-body">
+      <div class="pc-side">
+        <div class="pcnav active" onclick="swNav('terminal',this)"><div class="pcnav-dot"></div>TERMINAL</div>
+        <div class="pcnav" onclick="swNav('heatmap',this)"><div class="pcnav-dot"></div>HEATMAP</div>
+        <div class="pcnav" onclick="swNav('sysinfo',this)"><div class="pcnav-dot"></div>SYSINFO</div>
+        <div class="pcnav" onclick="swNav('files',this)"><div class="pcnav-dot"></div>FILES</div>
+        <div class="pc-qs">
+          <div class="pc-qslbl">QUICK OPS</div>
+          <div class="pcnav" style="padding:5px 8px" onclick="tCmd('whoami')"><div class="pcnav-dot"></div>WHOAMI</div>
+          <div class="pcnav" style="padding:5px 8px" onclick="tCmd('skills')"><div class="pcnav-dot"></div>SKILLS</div>
+          <div class="pcnav" style="padding:5px 8px" onclick="tCmd('stack')"><div class="pcnav-dot"></div>STACK</div>
+          <div class="pcnav" style="padding:5px 8px" onclick="tCmd('contact')"><div class="pcnav-dot"></div>CONTACT</div>
+          <div class="pcnav" style="padding:5px 8px" onclick="tCmd('ls')"><div class="pcnav-dot"></div>LS</div>
+          <div class="pcnav" style="padding:5px 8px" onclick="tCmd('edu')"><div class="pcnav-dot"></div>EDU</div>
+        </div>
+      </div>
+      <div class="pc-main">
+        <div class="pc-panel active" id="pan-terminal">
+          <div id="tout"></div>
+          <div class="t-inp">
+            <span class="t-pr-lbl">ISAJ011@GOTHAM:~$</span>
+            <input class="t-in" id="tin" placeholder="type a command..." autocomplete="off" spellcheck="false" onkeydown="onKey(event)">
+          </div>
+        </div>
+        <div class="pc-panel" id="pan-heatmap">
+          <div style="font-family:'Orbitron',monospace;font-size:8px;color:var(--acc);letter-spacing:3px;margin-bottom:8px">52-WEEK COMMIT SURVEILLANCE</div>
+          <div class="hg" id="hgrid"></div>
+          <div style="display:flex;align-items:center;gap:5px;margin-top:7px;font-size:8px;color:var(--muted)">
+            LESS
+            <div style="width:8px;height:8px;border-radius:1px;background:#0c1020"></div>
+            <div style="width:8px;height:8px;border-radius:1px;background:#1a3050"></div>
+            <div style="width:8px;height:8px;border-radius:1px;background:#2a5090"></div>
+            <div style="width:8px;height:8px;border-radius:1px;background:#3a7bd5"></div>
+            <div style="width:8px;height:8px;border-radius:1px;background:#5a9ff5"></div>
+            MORE
+          </div>
+          <div class="htip" id="htip">hover a cell to inspect</div>
+        </div>
+        <div class="pc-panel" id="pan-sysinfo">
+          <div style="font-family:'Orbitron',monospace;font-size:8px;color:var(--acc);letter-spacing:3px;margin-bottom:8px">SYSTEM STATUS</div>
+          <div class="srow"><span class="srl">OPERATOR</span><span class="srv">Ismael Saad / ISAJ011</span></div>
+          <div class="srow"><span class="srl">OS</span><span class="srv">ARKHAM OS v4.7 · Linux</span></div>
+          <div class="srow"><span class="srl">NODE.JS</span><span class="srv">v20.11.0</span></div>
+          <div class="srow"><span class="srl">PYTHON</span><span class="srv">3.11.4 · Django 4.2</span></div>
+          <div class="srow"><span class="srl">JAVA</span><span class="srv">17 LTS · Spring Boot 3.x</span></div>
+          <div class="srow"><span class="srl">DOCKER</span><span class="srv" style="color:var(--green)">RUNNING</span></div>
+          <div style="margin-top:10px;font-family:'Orbitron',monospace;font-size:8px;color:var(--muted);letter-spacing:2px;margin-bottom:6px">ACTIVE PROCESSES</div>
+          <div class="prow"><span class="pname">next-server</span><div class="pbar"><div class="pfill" style="--w:72%;width:72%"></div></div><span class="ppct">72%</span></div>
+          <div class="prow"><span class="pname">django-report</span><div class="pbar"><div class="pfill" style="--w:55%;width:55%"></div></div><span class="ppct">55%</span></div>
+          <div class="prow"><span class="pname">spring-boot</span><div class="pbar"><div class="pfill" style="--w:48%;width:48%"></div></div><span class="ppct">48%</span></div>
+          <div class="prow"><span class="pname">postgres</span><div class="pbar"><div class="pfill" style="--w:35%;width:35%"></div></div><span class="ppct">35%</span></div>
+          <div class="prow"><span class="pname">redis</span><div class="pbar"><div class="pfill" style="--w:22%;width:22%"></div></div><span class="ppct">22%</span></div>
+        </div>
+        <div class="pc-panel" id="pan-files">
+          <div style="font-family:'Orbitron',monospace;font-size:8px;color:var(--acc);letter-spacing:3px;margin-bottom:8px">~/isaj011/projects</div>
+          <div class="frow"><div class="fic fi-d">D</div><span class="fname">vehicle-route-management/</span><span class="fsz">4.2 MB</span></div>
+          <div class="frow"><div class="fic fi-d">D</div><span class="fname">django-reporting-engine/</span><span class="fsz">3.8 MB</span></div>
+          <div class="frow"><div class="fic fi-d">D</div><span class="fname">3d-portfolio/</span><span class="fsz">2.1 MB</span></div>
+          <div class="frow"><div class="fic fi-d">D</div><span class="fname">serianu-microfrontend/</span><span class="fsz">8.4 MB</span></div>
+          <div class="frow"><div class="fic fi-j">T</div><span class="fname">tsconfig.json</span><span class="fsz">890 B</span></div>
+          <div class="frow"><div class="fic fi-m">M</div><span class="fname">README.md</span><span class="fsz">9.2 KB</span></div>
+          <div class="frow"><div class="fic fi-j">D</div><span class="fname">docker-compose.yml</span><span class="fsz">1.4 KB</span></div>
+          <div class="frow"><div class="fic fi-j">K</div><span class="fname">k8s/deployment.yaml</span><span class="fsz">3.4 KB</span></div>
+          <div class="frow"><div class="fic fi-j">P</div><span class="fname">requirements.txt</span><span class="fsz">1.1 KB</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 52-WEEK GRID -->
+<div class="sec">
+  <div class="sec-hdr">52-WEEK SURVEILLANCE LOG</div>
+  <div class="full-hg" id="fullhg"></div>
+  <div class="hleg">
+    <span>LESS</span>
+    <div class="hlegc" style="background:#0c1020"></div>
+    <div class="hlegc" style="background:#1a3050"></div>
+    <div class="hlegc" style="background:#2a5090"></div>
+    <div class="hlegc" style="background:#3a7bd5"></div>
+    <div class="hlegc" style="background:#5a9ff5"></div>
+    <span>MORE · hover for detail</span>
+  </div>
+</div>
+
+<!-- GAME -->
+<div style="border-bottom:1px solid var(--border)">
+  <div class="game-top">
+    <span class="glgame">GOTHAM PURSUIT · COMMIT RUNNER</span>
+    <div class="ghud">
+      <div class="ghi"><span class="lbl">SCORE </span><span class="val" id="gsc">0</span></div>
+      <div class="ghi"><span class="lbl">BEST </span><span class="val" id="gbe">0</span></div>
+      <div class="ghi"><span class="lbl">COMBO </span><span class="val" id="gco">x1</span></div>
+    </div>
+  </div>
+  <div class="gcvwrap"><canvas id="gcv" width="860" height="140"></canvas></div>
+  <div class="gctrl">
+    <span class="ghint">SPACE / TAP to jump · double-jump · collect commits · dodge drones</span>
+    <div class="glives" id="glives"></div>
+  </div>
+  <div class="gpu" id="gpu"></div>
+</div>
+
+<!-- OPEN CHANNEL -->
+<div class="sec">
+  <div class="sec-hdr">OPEN CHANNEL</div>
+  <div class="links">
+    <a class="lnk" href="https://github.com/Isaj011" target="_blank"><div class="lnk-dot"></div>GITHUB</a>
+    <a class="lnk" href="https://linkedin.com/in/isaj011" target="_blank"><div class="lnk-dot"></div>LINKEDIN</a>
+    <a class="lnk" href="https://3d-app-portfolio-saad.netlify.app" target="_blank"><div class="lnk-dot"></div>PORTFOLIO 3D</a>
+    <a class="lnk" href="https://myfolio-isaj011-nyatirogue.netlify.app" target="_blank"><div class="lnk-dot"></div>PORTFOLIO CLASSIC</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span class="fl">ISAJ011 · ISMAEL SAAD · GOTHAM TECH DIVISION · NAIROBI</span>
+  <span class="fr">"It's not who I am underneath — but what I build that defines me."</span>
+</div>
+
+</div>
+
+<script>
+/* RAIN */
+(function(){
+  const c=document.getElementById('rain'),x=c.getContext('2d');
+  let d=[];
+  function init(){c.width=window.innerWidth;c.height=window.innerHeight;d=Array.from({length:Math.floor(c.width/13)},(_,i)=>({x:i*13,y:Math.random()*c.height,s:1+Math.random()*2,l:8+Math.random()*18}));}
+  function draw(){x.clearRect(0,0,c.width,c.height);x.strokeStyle='#3a7bd5';x.lineWidth=1;d.forEach(r=>{x.globalAlpha=.12+Math.random()*.18;x.beginPath();x.moveTo(r.x,r.y);x.lineTo(r.x-2,r.y+r.l);x.stroke();r.y+=r.s;if(r.y>c.height)r.y=-r.l;});x.globalAlpha=1;requestAnimationFrame(draw);}
+  window.addEventListener('resize',init);init();draw();
+})();
+
+/* GRID BG */
+(function(){
+  const c=document.getElementById('gridbg'),x=c.getContext('2d');
+  function draw(){c.width=c.offsetWidth;c.height=c.offsetHeight||130;x.strokeStyle='#3a7bd5';x.lineWidth=.4;for(let i=0;i<c.width;i+=22){x.beginPath();x.moveTo(i,0);x.lineTo(i,c.height);x.stroke();}for(let i=0;i<c.height;i+=22){x.beginPath();x.moveTo(0,i);x.lineTo(c.width,i);x.stroke();}}
+  setTimeout(draw,200);
+})();
+
+/* UPTIME */
+let ut=0;
+setInterval(()=>{
+  ut++;
+  const s=t=>`${String(Math.floor(t/3600)).padStart(2,'0')}:${String(Math.floor((t%3600)/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;
+  const v=s(ut);
+  const a=document.getElementById('upt'),b=document.getElementById('pclk');
+  if(a)a.textContent=v;if(b)b.textContent=v;
+},1000);
+
+/* COUNTERS */
+function cu(id,t,d){const el=document.getElementById(id);if(!el)return;let v=0;const step=t/(d/16);const ti=setInterval(()=>{v=Math.min(v+step,t);el.textContent=Math.round(v);if(v>=t)clearInterval(ti);},16);}
+setTimeout(()=>{
+  cu('m1',1240,1400);cu('m2',48,900);cu('m3',312,1100);cu('m4',47,700);
+  ['ms1','ms2','ms3','ms4'].forEach((id,i)=>{
+    const el=document.getElementById(id);if(!el)return;
+    [7,4,5,3][i];
+    for(let j=0;j<8;j++){const s=document.createElement('div');s.className='mseg';if(j<[7,4,5,3][i])setTimeout(()=>s.classList.add('on'),600+j*120);el.appendChild(s);}
+  });
+},300);
+
+/* SKILLS */
+setTimeout(()=>{document.querySelectorAll('.sf').forEach(e=>{e.style.width=e.dataset.w+'%';});},400);
+function ps(r){const f=r.querySelector('.sf');f.classList.add('flash');setTimeout(()=>f.classList.remove('flash'),700);}
+
+/* CASE FILES */
+function tc(el){
+  const open=el.classList.contains('open');
+  document.querySelectorAll('.case').forEach(c=>{c.classList.remove('open');const b=c.querySelector('.cbody');b.style.maxHeight='0';b.style.opacity='0';});
+  if(!open){el.classList.add('open');const b=el.querySelector('.cbody');b.style.maxHeight='180px';b.style.opacity='1';}
+}
+
+/* PC TABS */
+function swTab(id,el){document.querySelectorAll('.pctab').forEach(t=>t.className='pctab off');el.className='pctab on';showPan(id);}
+function swNav(id,el){document.querySelectorAll('.pcnav').forEach(n=>n.classList.remove('active'));el.classList.add('active');showPan(id);document.querySelectorAll('.pctab').forEach(t=>{t.className='pctab '+(t.textContent.trim()===id.toUpperCase()?'on':'off');});}
+function showPan(id){document.querySelectorAll('.pc-panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('pan-'+id);if(p)p.classList.add('active');if(id==='heatmap')buildHM();}
+
+/* TERMINAL */
+const CMDS={
+  help:{l:[{c:'go',t:'Commands: whoami  skills  stack  contact  status  ls  edu  clear'}]},
+  whoami:{l:[{c:'ok',t:'IDENTITY : ISAJ011'},{c:'ou',t:'NAME     : Ismael Saad'},{c:'ou',t:'ROLE     : Lead Frontend & Full-Stack Engineer'},{c:'ou',t:'COMPANY  : Serianu Limited, Nairobi — May 2023–Present'},{c:'ou',t:'MISSION  : Build. Ship. Repeat.'}]},
+  skills:{l:[{c:'go',t:'SKILL MATRIX:'},{c:'ou',t:'Frontend    ████████████░ 93%  React · Next.js · TS · Vite'},{c:'ou',t:'Spring Boot ███████████░░ 88%  Java · REST · JWT · RBAC'},{c:'ou',t:'Django      ███████████░░ 87%  Python · PDF · ReportLab'},{c:'ou',t:'Microfront  ███████████░░ 88%  Module Federation'},{c:'ou',t:'Database    ██████████░░░ 82%  PG · Mongo · Schema'},{c:'ou',t:'DevOps      █████████░░░░ 72%  Docker · K8s · AWS'},{c:'ou',t:'Tech Lead   ████████████░ 90%  Code Review · Mentor'}]},
+  stack:{l:[{c:'go',t:'TECH ARSENAL:'},{c:'ou',t:'Frontend : React · Next.js · TypeScript · Vite · RTK · Tailwind'},{c:'ou',t:'Backend  : Spring Boot · Django · Node.js · Express · GraphQL'},{c:'ou',t:'Database : PostgreSQL · MongoDB · MySQL · Redis · SQL Server'},{c:'ou',t:'Infra    : Docker · Kubernetes · AWS/Azure/GCP · CI/CD'},{c:'ou',t:'Tools    : Figma · Jira · Confluence · Postman · ReportLab'}]},
+  contact:{l:[{c:'ok',t:'SECURE CHANNEL OPEN'},{c:'ou',t:'GitHub   : github.com/Isaj011'},{c:'ou',t:'LinkedIn : linkedin.com/in/isaj011'},{c:'ou',t:'Portfolio: 3d-app-portfolio-saad.netlify.app'}]},
+  status:{l:[{c:'ok',t:'ALL SYSTEMS NOMINAL'},{c:'ou',t:'Company  : Serianu Limited · May 2023–Present'},{c:'ou',t:'Focus    : Microfrontends · Enterprise APIs · Reporting'},{c:'ou',t:'Streak   : 47 days · Total Commits: 1,240'}]},
+  ls:{l:[{c:'go',t:'~/isaj011/projects:'},{c:'ou',t:'  [LIVE] vehicle-route-management  — Node.js logistics platform'},{c:'ou',t:'  [LIVE] django-reporting-engine   — Enterprise PDF/Docx system'},{c:'ou',t:'  [LIVE] 3d-portfolio              — Three.js interactive portfolio'},{c:'ou',t:'  [LIVE] serianu-microfrontend     — Enterprise frontend arch'}]},
+  edu:{l:[{c:'go',t:'EDUCATION:'},{c:'ou',t:"  BBIT — Bachelor of Business Information Technology"},{c:'ou',t:"  Murang'a University of Technology, Kenya · 2016–2020"}]},
+  clear:{clear:true},
+};
+function tPrint(lines){const o=document.getElementById('tout');lines.forEach(l=>{const d=document.createElement('div');d.className='tl '+(l.c||'ou');d.textContent=l.t;o.appendChild(d);});o.scrollTop=o.scrollHeight;}
+function tCmd(cmd){
+  showPan('terminal');
+  document.querySelectorAll('.pctab').forEach(t=>{t.className='pctab '+(t.textContent==='TERMINAL'?'on':'off');});
+  document.querySelectorAll('.pcnav').forEach(n=>{if(n.textContent.trim()==='TERMINAL')n.classList.add('active');else n.classList.remove('active');});
+  const o=document.getElementById('tout');
+  const r=document.createElement('div');r.className='tl pr';r.textContent='ISAJ011@GOTHAM:~$ '+cmd;o.appendChild(r);
+  const c=CMDS[cmd.toLowerCase().trim()];
+  if(c){if(c.clear){o.innerHTML='';return;}tPrint(c.l);}
+  else tPrint([{c:'er',t:"Command not found: '"+cmd+"' — type 'help' for commands."}]);
+  o.scrollTop=o.scrollHeight;
+}
+function onKey(e){if(e.key!=='Enter')return;const i=document.getElementById('tin');const v=i.value.trim();i.value='';if(v)tCmd(v);}
+setTimeout(()=>{tPrint([{c:'di',t:'Batcomputer v4.7 — Arkham Systems Online'},{c:'ok',t:'Operative: Ismael Saad / ISAJ011'},{c:'di',t:"Type 'help' for available commands."},{c:'di',t:''}]);},800);
+
+/* HEATMAP */
+let hmb=false;
+const hmL=['#0c1020','#1a3050','#2a5090','#3a7bd5','#5a9ff5'];
+const hmD=Array.from({length:364},()=>Math.random());
+function buildHM(){
+  if(hmb)return;hmb=true;
+  const g=document.getElementById('hgrid');if(!g)return;g.innerHTML='';
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  hmD.forEach((v,i)=>{
+    const lv=v>.9?4:v>.7?3:v>.5?2:v>.3?1:0;
+    const el=document.createElement('div');el.className='hc';el.style.background=hmL[lv];
+    el.addEventListener('mouseenter',()=>{document.getElementById('htip').textContent=Math.round(v*8)+' commits · week '+(Math.floor(i/7)+1)+' · '+days[i%7];});
+    g.appendChild(el);
+  });
+}
+
+/* FULL GRID */
+(function(){
+  const g=document.getElementById('fullhg');if(!g)return;
+  const lvs=['#0c1020','#1a3050','#2a5090','#3a7bd5','#5a9ff5'];
+  for(let i=0;i<364;i++){
+    const v=Math.random();const lv=v>.9?4:v>.7?3:v>.5?2:v>.3?1:0;
+    const el=document.createElement('div');el.className='full-hc';el.style.background=lvs[lv];
+    el.title=Math.round(v*8)+' commits · week '+(Math.floor(i/7)+1);
+    g.appendChild(el);
+  }
+})();
+
+/* GAME */
+const CV=document.getElementById('gcv'),CTX=CV.getContext('2d');
+const GW=860,GH=140,GND=106;
+const COL={bg:'#02030a',acc:'#3a7bd5',acc2:'#5a9ff5',gold:'#c8a84b',red:'#c0392b',green:'#2ecc71',muted:'#3a5880',dim:'#1a2840'};
+let P,obs,cmts,score,best=0,combo,ctimer,lives,alive,raf,fr;
+function rfc(){return{x:GW+16,y:GND-(18+Math.random()*44),w:13,h:13,type:['commit','merge','deploy'][Math.floor(Math.random()*3)],spd:3.2+(score*.003)};}
+function spOb(){
+  const t=['drone','barrier','spike'][Math.floor(Math.random()*3)];
+  const h=t==='barrier'?32:t==='drone'?17:13;
+  const y=t==='drone'?GND-38:GND-h+2;
+  obs.push({x:GW+20,y,w:t==='barrier'?10:t==='drone'?22:13,h,type:t,spd:3.2+(score*.004)});
+}
+function initG(){
+  P={x:60,y:GND,vy:0,w:16,h:22,jc:0,inv:0};
+  obs=[];cmts=[];score=0;combo=1;ctimer=0;lives=3;alive=true;fr=0;
+  document.getElementById('gsc').textContent='0';
+  document.getElementById('gco').textContent='x1';
+  buildLives();
+  document.getElementById('gpu').textContent='';
+  if(raf)cancelAnimationFrame(raf);
+  gloop();
+}
+function buildLives(){
+  const el=document.getElementById('glives');if(!el)return;el.innerHTML='';
+  for(let i=0;i<3;i++){const d=document.createElement('div');d.className='gli'+(i>=lives?' dead':'');el.appendChild(d);}
+}
+function jump(){if(!alive){initG();return;}if(P.jc<2){P.vy=(-10.5)-(P.jc*1.5);P.jc++;}}
+document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();jump();}});
+CV.addEventListener('click',jump);
+CV.addEventListener('touchstart',e=>{e.preventDefault();jump();},{passive:false});
+function col(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;}
+function showGpu(msg){const el=document.getElementById('gpu');if(el){el.textContent=msg;setTimeout(()=>{if(el.textContent===msg)el.textContent='';},1300);}}
+function gloop(){
+  if(!alive){
+    CTX.fillStyle='rgba(2,3,10,.85)';CTX.fillRect(0,0,GW,GH);
+    CTX.fillStyle=COL.acc;CTX.font='bold 16px Orbitron,monospace';CTX.textAlign='center';
+    CTX.fillText('PURSUIT FAILED',GW/2,GH/2-10);
+    CTX.fillStyle=COL.muted;CTX.font='10px Share Tech Mono';
+    CTX.fillText('SPACE / TAP to restart',GW/2,GH/2+10);
+    CTX.textAlign='left';return;
+  }
+  fr++;P.vy+=0.55;P.y+=P.vy;
+  if(P.y>=GND){P.y=GND;P.vy=0;P.jc=0;}
+  if(P.inv>0)P.inv--;
+  if(ctimer>0){ctimer--;if(ctimer===0){combo=1;document.getElementById('gco').textContent='x1';}}
+  if(fr%76===0)spOb();
+  if(fr%46===0)cmts.push(rfc());
+  obs.forEach(o=>o.x-=o.spd);cmts.forEach(c=>c.x-=c.spd);
+  obs=obs.filter(o=>o.x>-55);cmts=cmts.filter(c=>c.x>-22);
+  obs.forEach(o=>{if(P.inv===0&&col(P,o)){lives--;buildLives();P.inv=60;showGpu('HIT — SHIELDS DOWN');if(lives<=0)alive=false;}});
+  const hit=[];
+  cmts.forEach(c=>{
+    if(col(P,c)){
+      hit.push(c);combo++;ctimer=130;
+      const pts=combo>4?10:combo>2?5:1;score+=pts;
+      document.getElementById('gsc').textContent=score;
+      document.getElementById('gco').textContent='x'+combo;
+      if(score>best){best=score;document.getElementById('gbe').textContent=best;}
+      if(c.type==='merge')showGpu('MERGE COMMIT! COMBO x'+combo);
+      else if(c.type==='deploy')showGpu('DEPLOYED! +'+pts+' PTS');
+      else if(combo>4)showGpu('STREAK x'+combo+' · +'+pts);
+    }
+  });
+  cmts=cmts.filter(c=>!hit.includes(c));
+  CTX.fillStyle=COL.bg;CTX.fillRect(0,0,GW,GH);
+  CTX.strokeStyle='#0d1428';CTX.lineWidth=.5;
+  for(let x=(fr*.5)%55;x<GW;x+=55){CTX.beginPath();CTX.moveTo(x,0);CTX.lineTo(x,GH);CTX.stroke();}
+  for(let y=0;y<GH;y+=30){CTX.beginPath();CTX.moveTo(0,y);CTX.lineTo(GW,y);CTX.stroke();}
+  CTX.fillStyle='#0d1420';CTX.fillRect(0,GND+P.h,GW,GH);
+  CTX.fillStyle=COL.dim;
+  for(let x=(fr*1.5)%44;x<GW;x+=44)CTX.fillRect(x,GND+P.h+2,32,2);
+  cmts.forEach(c=>{
+    const cols={commit:COL.acc2,merge:COL.green,deploy:COL.gold};
+    CTX.fillStyle=cols[c.type];CTX.fillRect(c.x,c.y,c.w,c.h);
+    CTX.fillStyle='rgba(0,0,0,.35)';CTX.fillRect(c.x+2,c.y+2,c.w-4,c.h-4);
+    CTX.fillStyle=cols[c.type];CTX.fillRect(c.x+4,c.y+4,4,4);
+  });
+  obs.forEach(o=>{
+    if(o.type==='drone'){
+      CTX.fillStyle=COL.red;CTX.fillRect(o.x,o.y,o.w,o.h);
+      CTX.fillStyle='#ff3333';CTX.fillRect(o.x+2,o.y+4,6,5);
+      CTX.fillStyle=COL.red;CTX.fillRect(o.x-4,o.y+6,4,2);CTX.fillRect(o.x+o.w,o.y+6,4,2);
+    }else if(o.type==='barrier'){
+      CTX.fillStyle='#1a2840';CTX.fillRect(o.x,o.y,o.w,o.h);
+      CTX.fillStyle=COL.muted;for(let i=0;i<o.h;i+=5)CTX.fillRect(o.x+1,o.y+i,7,3);
+    }else{
+      CTX.fillStyle='#6b1010';CTX.beginPath();CTX.moveTo(o.x+6,o.y);CTX.lineTo(o.x+13,o.y+13);CTX.lineTo(o.x,o.y+13);CTX.closePath();CTX.fill();
+      CTX.fillStyle=COL.red;CTX.beginPath();CTX.moveTo(o.x+6,o.y+3);CTX.lineTo(o.x+10,o.y+11);CTX.lineTo(o.x+2,o.y+11);CTX.closePath();CTX.fill();
+    }
+  });
+  if(P.inv===0||Math.floor(P.inv/4)%2===0){
+    CTX.fillStyle=COL.acc2;CTX.fillRect(P.x,P.y,P.w,P.h);
+    CTX.fillStyle=COL.acc;CTX.fillRect(P.x+2,P.y+2,P.w-4,6);
+    CTX.fillStyle='#04080f';CTX.fillRect(P.x+3,P.y+3,3,2);CTX.fillRect(P.x+P.w-6,P.y+3,3,2);
+    CTX.fillStyle=COL.acc;CTX.fillRect(P.x-5,P.y+4,5,2);CTX.fillRect(P.x+P.w,P.y+4,5,2);
+  }
+  const spd=(3.2+(score*.003)).toFixed(1);
+  CTX.fillStyle=COL.muted;CTX.font='8px Share Tech Mono';
+  CTX.fillText('SPD:'+spd,GW-72,13);
+  if(combo>1){CTX.fillStyle=COL.gold;CTX.font='bold 10px Orbitron';CTX.textAlign='center';CTX.fillText('COMBO x'+combo,GW/2,15);CTX.textAlign='left';}
+  raf=requestAnimationFrame(gloop);
+}
+initG();
+</script>
+</body>
+</html>
